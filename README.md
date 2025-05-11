@@ -1,40 +1,104 @@
-# TactileNet: Advancing Accessibility with Stable Diffusion-Driven Tactile Graphics
 
-## Introduction
+# TactileNet: Bridging the Accessibility Gap with AI-Generated Tactile Graphics for Individuals with Vision Impairment
 
-In the era of digital accessibility, catering to the needs of visually impaired individuals remains a paramount challenge. With over 2.2 billion people globally suffering from some form of vision impairment, innovative solutions are imperative. Our work presents a novel approach leveraging deep learning models, notably Stable Diffusion (SD) models, to automate the creation of tactile graphics—a critical tool for visual accessibility.
+Official repository for our SMC 2025 submission and project: [TactileNet on arXiv](https://arxiv.org/abs/2504.04722)  
+Authors: Adnan Khan, Alireza Choubineh, Mai A. Shaaban, Abbas Akkasi, Majid Komeili
 
-Our methodology involves fine-tuning SD models using advanced techniques such as Low-Rank Adaptation (LoRA) and DreamBooth, with the help of our developed dataset TactileNet, a specialized dataset tailored for training vision-language models. Through rigorous experimentation and evaluation, we demonstrate the efficacy of our adapted SD models in generating tactile graphics possibly suitable for visually impaired users. Our results showcase our fine-tuned model’s ability to produce intricate tactile features essential for tactile recognition.
+---
 
-Despite challenges, including limited data availability and model complexity, our findings underscore the potential of automated solutions to benefit the tactile graphics production. As we set a starting point for future endeavors to gather more comprehensive data and refine artificial intelligence generative technology for tactile creation, collaborative efforts with accessibility experts and end-users will be pivotal in enhancing the accessibility and usability of generated tactile outputs.
+## 🔍 Abstract
 
-## Setup Instructions
+Tactile graphics provide critical access to visual information for individuals with vision loss. TactileNet introduces the first large-scale dataset and fine-tuned Stable Diffusion framework for generating embossing-ready 2D tactile templates from text or image inputs. Our method combines Low-Rank Adaptation (LoRA) and DreamBooth fine-tuning techniques to generate high-fidelity tactile graphics while reducing computational overhead. Evaluations with tactile experts show strong alignment with design guidelines and structural similarity to expert-crafted templates.
 
-Follow the steps below to use our fine-tuned adapters in Stable Diffusion WebUI.
+---
 
-### Step 1: Set Up Stable Diffusion WebUI
+## 🧠 Method Overview
 
-1. **Install Stable Diffusion WebUI**: Follow the steps [here](https://github.com/AUTOMATIC1111/stable-diffusion-webui) to install and set up the interface on your system.
+TactileNet uses class-specific LoRA and DreamBooth adapters fine-tuned on 66 categories of tactile graphics. Each adapter is trained on a small number of high-quality, expert-sourced images and their structured prompts. The model supports both text-to-image and image-to-image generation via Stable Diffusion v1.5.
 
-### Step 2: Clone Repository and Copy Adapters
+Key Features:
+- High SSIM similarity (0.538 vs expert designs)
+- Better silhouette preservation (0.259 vs 0.215 in binary SSIM)
+- Fully compatible with embossing workflows
+- Supports prompt-level editing (e.g., add/remove logo, features)
 
-1. **Clone Repository**:
-   ```bash
-   git clone https://github.com/Adnan-Khan7/TactileNet.git
-   cd TactileNet
-2. Copy Adapters: Copy all 15 adapters from TactileNet/models/ folder to /stable-diffusion-webui/models/Lora.
+---
 
-### Step 3: Download and Place Generator Models
-Generator Model 1: Download the stable-diffusion-v1-5 model (v1-5-pruned-emaonly.safetensors) checkpoint from [Hugging Face](https://huggingface.co/runwayml/stable-diffusion-v1-5/tree/main ) and place it in the folder /stable-diffusion-webui/models/Stable-diffusion.
+## ⚙️ Setup Instructions
 
-Generator Model 2: Download the deliberate_v3.safetensors model from [Google Drive](https://drive.google.com/file/d/1bQo3oElYmsCmrcT-EgGeriBGszZmzUgW/view?usp=sharing) and place it in the folder /stable-diffusion-webui/models/Stable-diffusion.
+### 1. Set Up Stable Diffusion WebUI
 
-## Usage
-Once the setup is complete, you can start generating tactile graphics using the Stable Diffusion WebUI with our fine-tuned adapters. Follow the WebUI instructions to load the models and adapters, and generate images based on your prompts. An example usage of lora adapter for "airplane" class is shown in Figure below. ![Image](imgs/airplane_config.jpg)
+Follow instructions from the [Stable Diffusion WebUI](https://github.com/AUTOMATIC1111/stable-diffusion-webui) repository.
 
+### 2. Clone Repository
 
-## Configurations
-Keep the default hyper-parameters for text to image translation. For image to image translation denoising strength between 0.8 - 0.85 for most classes bear good results.
+```bash
+git clone https://github.com/Adnan-Khan7/TactileNet.git
+cd TactileNet
+```
 
-## License
+### 3. Copy Adapters
+
+Move LoRA adapters from:
+
+```
+TactileNet/models/
+```
+
+to:
+
+```
+stable-diffusion-webui/models/Lora/
+```
+
+### 4. Download Base Models
+
+- **SD v1.5**: Get `v1-5-pruned-emaonly.safetensors` from [Hugging Face](https://huggingface.co/runwayml/stable-diffusion-v1-5).
+- **Deliberate v3** (optional): [Download](https://drive.google.com/file/d/1bQo3oElYmsCmrcT-EgGeriBGszZmzUgW/view?usp=sharing)
+
+Place in: `/stable-diffusion-webui/models/Stable-diffusion/`
+
+---
+
+## 🧪 Usage & Configuration
+
+- Use the WebUI to generate tactile graphics with prompts like:
+  > "Create a tactile graphic of an airplane for visually impaired users, emphasizing raised wings, fuselage, and tail."
+- For **image-to-image** translation: Use denoising strength between `0.85–0.9`
+- For **text-to-image** generation: Default settings (CFG=7, steps=20) suffice
+- Example configuration shown below:
+
+![Example](imgs/airplane_config.jpg)
+
+---
+
+## 📈 Evaluation Protocol
+
+- **132 tactile graphics evaluated** (66 generated + 66 benchmark)
+- **66 natural images** as reference
+- Evaluation Metrics:
+  - Pose accuracy (Q1)
+  - Guideline adherence (Q2)
+  - Expert-rated quality (Q3)
+  - SSIM (structural fidelity)
+
+---
+
+## 📦 Reproducibility
+
+Includes:
+- `ssim.py` for evaluating image similarity
+- Prompt examples
+- Precomputed metrics (coming soon)
+
+---
+
+## 📄 License
+
 This project is licensed under the MIT License.
+
+---
+
+## 🙏 Acknowledgments
+
+This work was supported in part by MITACS and the Digital Alliance of Canada. We thank the student volunteers at the Intelligent Machines Lab, Carleton University, for their help with dataset curation and image matching.
